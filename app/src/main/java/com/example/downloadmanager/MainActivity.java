@@ -35,6 +35,11 @@ public class MainActivity extends AppCompatActivity {
         // Once the BroadcastReceiver is created, register for ACTION_DOWNLOAD_COMPLETE.
         registerReceiver(onDownloadComplete,
                 new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
+
+        // Responding to download notification clicks
+        // IntentFilter filter = new IntentFilter(DownloadManager.ACTION_NOTIFICATION_CLICKED);
+        // registerReceiver(receiver, filter);
+
     }
 
     // It is also important that you unregister the BroadcastReceiver in onDestroy.
@@ -55,10 +60,13 @@ public class MainActivity extends AppCompatActivity {
                 .setTitle("Dummy File")// Title of the Download Notification
                 .setDescription("Downloading")// Description of the Download Notification
                 .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)// Visibility of the download Notification
-                .setDestinationUri(Uri.fromFile(file))// Uri of the destination file
+                .setDestinationUri(Uri.fromFile(file))// Uri of the destination file - arbitrary path
                 .setRequiresCharging(false)// Set if charging is required to begin the download
                 .setAllowedOverMetered(true)// Set if download is allowed on Mobile network
                 .setAllowedOverRoaming(true);// Set if download is allowed on roaming network
+
+        // to ensure a large fi le is downloaded only when connected to Wi-Fi:
+        // request.setAllowedNetworkTypes(request.NETWORK_WIFI);
 
         // get system service DOWNLOAD_SERVICE
         DownloadManager downloadManager= (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
@@ -85,4 +93,18 @@ public class MainActivity extends AppCompatActivity {
 
     };
 
+    /*
+    // Responding to download notification clicks
+    BroadcastReceiver receiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String extraID = DownloadManager.EXTRA_NOTIFICATION_CLICK_DOWNLOAD_IDS;
+            long[] references = intent.getLongArrayExtra(extraID);
+            for (long reference : references)
+                if (reference == myDownloadReference) {
+                // Do something with downloading file.
+                }
+        }
+    };
+    */
 }
